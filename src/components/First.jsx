@@ -25,10 +25,10 @@ const First = () => {
                 (
                     <Image source={require('../assets/images/logo.png')} style={[styles.image, {width: 222, height: height * 0.212, marginTop: height * 0.03}]} />
                 ) :
-                index === 2 ? (
+                index === 1 ? (
                     <Image source={require('../assets/images/buttons.png')} style={[styles.image, {width: 264, height: height * 0.11, marginTop: height * 0.12}]} />
                 ) : (
-                    <Image source={require('../assets/images/game.png')} style={[styles.image, {width: 268, height: height * 268, marginTop: height * 0.02}]} />
+                    <Image source={require('../assets/images/game.png')} style={[styles.image, {width: 268, height: height * 0.268, marginTop: height * 0.02}]} />
                 )
             }
 

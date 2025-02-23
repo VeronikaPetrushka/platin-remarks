@@ -1,11 +1,13 @@
 import { View } from "react-native"
-import Home from "../components/Home"
+import Add from "../components/Add"
 import Menu from "../components/Menu";
 
-const HomeScreen = () => {
+const AddScreen = ({ route }) => {
+    const type = route?.params?.type || 'Quick note';
+
     return (
         <View style={styles.container}>
-            <Home />
+            <Add type={type} />
             <View style={styles.menu}>
                 <Menu />
             </View>
@@ -26,4 +28,4 @@ const styles = {
     }
 }
 
-export default HomeScreen;
+export default AddScreen;
