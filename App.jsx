@@ -6,6 +6,7 @@ import FirstScreen from './src/screens/FirstScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import TagScreen from './src/screens/TagScreen';
 import AddScreen from './src/screens/AddScreen';
+import NotesScreen from './src/screens/NotesScreen';
 
 enableScreens();
 
@@ -34,6 +35,11 @@ const App = () => {
               <Stack.Screen 
                     name="AddScreen" 
                     component={AddScreen} 
+                    options={{ headerShown: false }} 
+              />
+              <Stack.Screen 
+                    name="NotesScreen" 
+                    component={NotesScreen} 
                     options={{ headerShown: false }} 
               />
         </Stack.Navigator>

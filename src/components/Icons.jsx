@@ -34,6 +34,9 @@ const Icons = ({ type, active }) => {
     case 'attach':
       imageSource = require('../assets/icons/attach.png');
       break;
+    case 'filter':
+      imageSource = require('../assets/icons/filter.png');
+      break;
   }
 
   return (
