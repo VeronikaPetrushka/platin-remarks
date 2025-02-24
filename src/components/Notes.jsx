@@ -10,15 +10,18 @@ const Notes = () => {
     const [advancedTags, setAdvancedTags] = useState([]);
     const [showQuickTags, setShowQuickTags] = useState(false);
     const [showAdvancedTags, setShowAdvancedTags] = useState(false);
-    const [quickTag, setQuickTag] = useState(null);
-    const [advancedTag, setAdvancedTag] = useState(null);
+    const [quickTag, setQuickTag] = useState('All');
+    const [advancedTag, setAdvancedTag] = useState('All');
     const [quickFiltered, setQuickFiltered] = useState([]);
     const [advancedFiltered, setAdvancedFiltered] = useState([]);
 
     useEffect(() => {
         loadNotes();
-    }, [quickTag, advancedTag]); 
+    }, []);
 
+    useEffect(() => {
+        loadNotes();
+    }, [quickTag, advancedTag]); 
 
     const loadNotes = async () => {
         try {
@@ -51,6 +54,19 @@ const Notes = () => {
         }
     };
 
+    const deleteNote = async (type, noteToDelete) => {
+        try {
+            let notes = await AsyncStorage.getItem(type);
+            notes = notes ? JSON.parse(notes) : [];
+            const updatedNotes = notes.filter(note => note.note !== noteToDelete.note);
+
+            await AsyncStorage.setItem(type, JSON.stringify(updatedNotes));
+            loadNotes();
+        } catch (error) {
+            console.error("Failed to delete note:", error);
+        }
+    };
+        
     const handleQuickTags = () => {
         if(showQuickTags) {
             setShowQuickTags(false)
@@ -119,6 +135,13 @@ const Notes = () => {
                                         </View>
                                         <View style={{width: '100%', padding: 10}}>
                                             <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
+
+                                            <TouchableOpacity 
+                                                style={styles.deleteBtn} 
+                                                onPress={() => deleteNote('quickNotes', note)}
+                                                >
+                                                <Icons type={'trash'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 ))
@@ -170,6 +193,13 @@ const Notes = () => {
                                         <View style={{width: '100%', padding: 10}}>
                                             <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
                                             {note.image && <Image source={{uri: note.image}} style={styles.noteImage} />}
+
+                                            <TouchableOpacity 
+                                                style={styles.deleteBtn} 
+                                                onPress={() => deleteNote('advancedNotes', note)}
+                                                >
+                                                <Icons type={'trash'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 ))
@@ -312,7 +342,17 @@ const styles = StyleSheet.create({
         width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: '#808080'
-    }
+    },
+
+    deleteBtn: {
+        width: 54,
+        height: 54,
+        padding: 14,
+        borderRadius: 14,
+        backgroundColor: '#ff3b30',
+        marginTop: 20,
+        alignSelf: 'flex-end'
+    },
 
 })
 

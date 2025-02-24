@@ -7,6 +7,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import TagScreen from './src/screens/TagScreen';
 import AddScreen from './src/screens/AddScreen';
 import NotesScreen from './src/screens/NotesScreen';
+import GameScreen from './src/screens/GameScreen';
 
 enableScreens();
 
@@ -40,6 +41,11 @@ const App = () => {
               <Stack.Screen 
                     name="NotesScreen" 
                     component={NotesScreen} 
+                    options={{ headerShown: false }} 
+              />
+              <Stack.Screen 
+                    name="GameScreen" 
+                    component={GameScreen} 
                     options={{ headerShown: false }} 
               />
         </Stack.Navigator>
