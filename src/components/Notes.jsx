@@ -6,27 +6,19 @@ import Icons from "./Icons";
 const { height } = Dimensions.get('window');
 
 const Notes = () => {
-    const [tags, setTags] = useState([]);
-    const [showTags, setShowTags] = useState(false);
-    const [selectedTag, setSelectedTag] = useState(null);
+    const [quickTags, setQuickTags] = useState([]);
+    const [advancedTags, setAdvancedTags] = useState([]);
+    const [showQuickTags, setShowQuickTags] = useState(false);
+    const [showAdvancedTags, setShowAdvancedTags] = useState(false);
+    const [quickTag, setQuickTag] = useState(null);
+    const [advancedTag, setAdvancedTag] = useState(null);
     const [quickFiltered, setQuickFiltered] = useState([]);
     const [advancedFiltered, setAdvancedFiltered] = useState([]);
 
     useEffect(() => {
-        loadTags();
         loadNotes();
-    }, [selectedTag]); 
+    }, [quickTag, advancedTag]); 
 
-    const loadTags = async () => {
-        try {
-            const storedTags = await AsyncStorage.getItem("tags");
-            if (storedTags) {
-                setTags(JSON.parse(storedTags));
-            }
-        } catch (error) {
-            console.error("Failed to load tags:", error);
-        }
-    };
 
     const loadNotes = async () => {
         try {
@@ -36,9 +28,17 @@ const Notes = () => {
             quickNotes = quickNotes ? JSON.parse(quickNotes) : [];
             advancedNotes = advancedNotes ? JSON.parse(advancedNotes) : [];
     
-            if (selectedTag) {
-                quickNotes = quickNotes.filter(note => note.tag?.name === selectedTag.name);
-                advancedNotes = advancedNotes.filter(note => note.tag?.name === selectedTag.name);
+            const quickTagsSet = new Set(quickNotes.map(note => note.tag?.name).filter(Boolean));
+            const advancedTagsSet = new Set(advancedNotes.map(note => note.tag?.name).filter(Boolean));
+    
+            setQuickTags(["All", ...quickTagsSet]); 
+            setAdvancedTags(["All", ...advancedTagsSet]);
+    
+            if (quickTag !== "All") {
+                quickNotes = quickNotes.filter(note => note.tag?.name === quickTag);
+            }
+            if (advancedTag !== "All") {
+                advancedNotes = advancedNotes.filter(note => note.tag?.name === advancedTag);
             }
     
             quickNotes.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -50,12 +50,20 @@ const Notes = () => {
             console.error("Failed to load notes:", error);
         }
     };
-    
-    const handleShowTags = () => {
-        if(showTags) {
-            setShowTags(false)
+
+    const handleQuickTags = () => {
+        if(showQuickTags) {
+            setShowQuickTags(false)
         } else {
-            setShowTags(true)
+            setShowQuickTags(true)
+        }
+    };
+
+    const handleAdvancedTags = () => {
+        if(showAdvancedTags) {
+            setShowAdvancedTags(false)
+        } else {
+            setShowAdvancedTags(true)
         }
     };
 
@@ -73,14 +81,35 @@ const Notes = () => {
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>Quick notes</Text>
                     </View>
-                    <TouchableOpacity style={[styles.settingsBtn, tags.length === 0 && {opacity: 0.5}]} onPress={handleShowTags} disabled={tags.length === 0}>
+                    <TouchableOpacity 
+                        style={[styles.settingsBtn, quickTags.length === 0 && {opacity: 0.5}]} 
+                        onPress={handleQuickTags} 
+                        disabled={quickTags.length === 0}
+                        >
                         <Icons type={'filter'} />
                     </TouchableOpacity>
+
+                    {
+                        showQuickTags && (
+                            <View style={styles.tagsContainer}>
+                                {quickTags.map((tag, index) => (
+                                    <TouchableOpacity 
+                                        key={index} 
+                                        style={[styles.tagBtn, quickTag === tag && styles.selectedTag,  index === quickTags.length - 1 && { borderBottomWidth: 0 }]} 
+                                        onPress={() => setQuickTag(tag)}
+                                    >
+                                        <Text style={styles.tagBtnText}>{tag}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        )
+                    }
+
                 </View>
 
                 {
                     quickFiltered.length > 0 && (
-                        <View>
+                        <View style={{width: '100%'}}>
                             {
                                 quickFiltered.map((note, index) => (
                                     <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
@@ -102,14 +131,35 @@ const Notes = () => {
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>Advanced notes</Text>
                     </View>
-                    <TouchableOpacity style={[styles.settingsBtn, tags.length === 0 && {opacity: 0.5}]} onPress={handleShowTags} disabled={tags.length === 0}>
+                    <TouchableOpacity 
+                        style={[styles.settingsBtn, advancedTags.length === 0 && {opacity: 0.5}]} 
+                        onPress={handleAdvancedTags} 
+                        disabled={advancedTags.length === 0}
+                        >
                         <Icons type={'filter'} />
                     </TouchableOpacity>
+
+                    {
+                        showAdvancedTags && (
+                            <View style={styles.tagsContainer}>
+                                {advancedTags.map((tag, index) => (
+                                    <TouchableOpacity 
+                                        key={index} 
+                                        style={[styles.tagBtn, quickTag === tag && styles.selectedTag, index === advancedTags.length - 1 && { borderBottomWidth: 0 }]} 
+                                        onPress={() => setAdvancedTag(tag)}
+                                    >
+                                        <Text style={styles.tagBtnText}>{tag}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        )
+                    }
+
                 </View>
 
                 {
                     advancedFiltered.length > 0 && (
-                        <View>
+                        <View style={{width: '100%'}}>
                             {
                                 advancedFiltered.map((note, index) => (
                                     <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
@@ -128,7 +178,7 @@ const Notes = () => {
                     )
                 }
 
-                <View style={{height: 100}} />
+                <View style={{height: 150}} />
 
             </ScrollView>
                 
@@ -244,6 +294,24 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 16,
         marginTop: 20
+    },
+
+    tagsContainer: {
+        width: 250,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        borderRadius: 12,
+        position: 'absolute',
+        top: 70,
+        right: 0,
+        zIndex: 10
+    },
+
+    tagBtn: {
+        paddingVertical: 10.5,
+        paddingHorizontal: 16,
+        width: '100%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#808080'
     }
 
 })
