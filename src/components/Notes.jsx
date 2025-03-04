@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, ScrollView } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, ScrollView, ImageBackground } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icons from "./Icons";
 
@@ -84,135 +84,137 @@ const Notes = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
 
-            <View style={styles.upperContainer}>
-                <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                <Text style={styles.upperText}>PLATIN REMARKS</Text>
-            </View>
+                <View style={styles.upperContainer}>
+                    <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+                    <Text style={styles.upperText}>PLATIN REMARKS</Text>
+                </View>
 
-            <ScrollView style={{width: '100%'}}>
+                <ScrollView style={{width: '100%'}}>
 
-                <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.title}>Quick notes</Text>
+                    <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.title}>Quick notes</Text>
+                        </View>
+                        <TouchableOpacity 
+                            style={[styles.settingsBtn, quickTags.length === 0 && {opacity: 0.5}]} 
+                            onPress={handleQuickTags} 
+                            disabled={quickTags.length === 0}
+                            >
+                            <Icons type={'filter'} />
+                        </TouchableOpacity>
+
+                        {
+                            showQuickTags && (
+                                <View style={styles.tagsContainer}>
+                                    {quickTags.map((tag, index) => (
+                                        <TouchableOpacity 
+                                            key={index} 
+                                            style={[styles.tagBtn, quickTag === tag && styles.selectedTag,  index === quickTags.length - 1 && { borderBottomWidth: 0 }]} 
+                                            onPress={() => setQuickTag(tag)}
+                                        >
+                                            <Text style={styles.tagBtnText}>{tag}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )
+                        }
+
                     </View>
-                    <TouchableOpacity 
-                        style={[styles.settingsBtn, quickTags.length === 0 && {opacity: 0.5}]} 
-                        onPress={handleQuickTags} 
-                        disabled={quickTags.length === 0}
-                        >
-                        <Icons type={'filter'} />
-                    </TouchableOpacity>
 
                     {
-                        showQuickTags && (
-                            <View style={styles.tagsContainer}>
-                                {quickTags.map((tag, index) => (
-                                    <TouchableOpacity 
-                                        key={index} 
-                                        style={[styles.tagBtn, quickTag === tag && styles.selectedTag,  index === quickTags.length - 1 && { borderBottomWidth: 0 }]} 
-                                        onPress={() => setQuickTag(tag)}
-                                    >
-                                        <Text style={styles.tagBtnText}>{tag}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                        quickFiltered.length > 0 && (
+                            <View style={{width: '100%'}}>
+                                {
+                                    quickFiltered.map((note, index) => (
+                                        <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
+                                            <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                                                <Text style={[styles.noteTitle, {color: '#000'}]}>{note.title}</Text>
+                                                <Text style={[styles.noteTitle, {color: '#000'}]}>{note.tag?.name}</Text>
+                                            </View>
+                                            <View style={{width: '100%', padding: 10}}>
+                                                <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
+
+                                                <TouchableOpacity 
+                                                    style={styles.deleteBtn} 
+                                                    onPress={() => deleteNote('quickNotes', note)}
+                                                    >
+                                                    <Icons type={'trash'} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    ))
+                                }
                             </View>
                         )
                     }
 
-                </View>
-
-                {
-                    quickFiltered.length > 0 && (
-                        <View style={{width: '100%'}}>
-                            {
-                                quickFiltered.map((note, index) => (
-                                    <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
-                                        <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
-                                            <Text style={[styles.noteTitle, {color: '#000'}]}>{note.title}</Text>
-                                            <Text style={[styles.noteTitle, {color: '#000'}]}>{note.tag?.name}</Text>
-                                        </View>
-                                        <View style={{width: '100%', padding: 10}}>
-                                            <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
-
-                                            <TouchableOpacity 
-                                                style={styles.deleteBtn} 
-                                                onPress={() => deleteNote('quickNotes', note)}
-                                                >
-                                                <Icons type={'trash'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                ))
-                            }
+                    <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.title}>Advanced notes</Text>
                         </View>
-                    )
-                }
+                        <TouchableOpacity 
+                            style={[styles.settingsBtn, advancedTags.length === 0 && {opacity: 0.5}]} 
+                            onPress={handleAdvancedTags} 
+                            disabled={advancedTags.length === 0}
+                            >
+                            <Icons type={'filter'} />
+                        </TouchableOpacity>
 
-                <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.title}>Advanced notes</Text>
+                        {
+                            showAdvancedTags && (
+                                <View style={styles.tagsContainer}>
+                                    {advancedTags.map((tag, index) => (
+                                        <TouchableOpacity 
+                                            key={index} 
+                                            style={[styles.tagBtn, quickTag === tag && styles.selectedTag, index === advancedTags.length - 1 && { borderBottomWidth: 0 }]} 
+                                            onPress={() => setAdvancedTag(tag)}
+                                        >
+                                            <Text style={styles.tagBtnText}>{tag}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )
+                        }
+
                     </View>
-                    <TouchableOpacity 
-                        style={[styles.settingsBtn, advancedTags.length === 0 && {opacity: 0.5}]} 
-                        onPress={handleAdvancedTags} 
-                        disabled={advancedTags.length === 0}
-                        >
-                        <Icons type={'filter'} />
-                    </TouchableOpacity>
 
                     {
-                        showAdvancedTags && (
-                            <View style={styles.tagsContainer}>
-                                {advancedTags.map((tag, index) => (
-                                    <TouchableOpacity 
-                                        key={index} 
-                                        style={[styles.tagBtn, quickTag === tag && styles.selectedTag, index === advancedTags.length - 1 && { borderBottomWidth: 0 }]} 
-                                        onPress={() => setAdvancedTag(tag)}
-                                    >
-                                        <Text style={styles.tagBtnText}>{tag}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                        advancedFiltered.length > 0 && (
+                            <View style={{width: '100%'}}>
+                                {
+                                    advancedFiltered.map((note, index) => (
+                                        <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
+                                            <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                                                <Text style={[styles.noteTitle, {color: '#000'}]}>{note.title}</Text>
+                                                <Text style={[styles.noteTitle, {color: '#000'}]}>{note.tag?.name}</Text>
+                                            </View>
+                                            <View style={{width: '100%', padding: 10}}>
+                                                <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
+                                                {note.image && <Image source={{uri: note.image}} style={styles.noteImage} />}
+
+                                                <TouchableOpacity 
+                                                    style={styles.deleteBtn} 
+                                                    onPress={() => deleteNote('advancedNotes', note)}
+                                                    >
+                                                    <Icons type={'trash'} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    ))
+                                }
                             </View>
                         )
                     }
 
+                    <View style={{height: 150}} />
+
+                </ScrollView>
+                    
                 </View>
-
-                {
-                    advancedFiltered.length > 0 && (
-                        <View style={{width: '100%'}}>
-                            {
-                                advancedFiltered.map((note, index) => (
-                                    <View key={index} style={{width: '100%', marginBottom: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
-                                        <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
-                                            <Text style={[styles.noteTitle, {color: '#000'}]}>{note.title}</Text>
-                                            <Text style={[styles.noteTitle, {color: '#000'}]}>{note.tag?.name}</Text>
-                                        </View>
-                                        <View style={{width: '100%', padding: 10}}>
-                                            <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{note.note}</Text>
-                                            {note.image && <Image source={{uri: note.image}} style={styles.noteImage} />}
-
-                                            <TouchableOpacity 
-                                                style={styles.deleteBtn} 
-                                                onPress={() => deleteNote('advancedNotes', note)}
-                                                >
-                                                <Icons type={'trash'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                ))
-                            }
-                        </View>
-                    )
-                }
-
-                <View style={{height: 150}} />
-
-            </ScrollView>
-                
-        </View>
+        </ImageBackground>
     )
 };
 
@@ -220,7 +222,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#0A2231',
         paddingHorizontal: 31
     },
 

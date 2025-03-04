@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, Animated } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, Animated, ImageBackground } from "react-native";
 
 const { height, width } = Dimensions.get("window");
 
@@ -65,45 +65,47 @@ const Game = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.upperContainer}>
-                <Image style={styles.logo} source={require("../assets/images/logo.png")} />
-                <Text style={styles.upperText}>PLATIN REMARKS</Text>
-            </View>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
+                <View style={styles.upperContainer}>
+                    <Image style={styles.logo} source={require("../assets/images/logo.png")} />
+                    <Text style={styles.upperText}>PLATIN REMARKS</Text>
+                </View>
 
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>{gameState === "win" ? "You Won!" : gameState === "lose" ? "You Lost!" : "Relax Game"}</Text>
-                {gameState === "start" && <Text style={styles.text}>Separate the star from the extra parts without breaking it and get a secret prize</Text>}
-            </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{gameState === "win" ? "You Won!" : gameState === "lose" ? "You Lost!" : "Relax Game"}</Text>
+                    {gameState === "start" && <Text style={styles.text}>Separate the star from the extra parts without breaking it and get a secret prize</Text>}
+                </View>
 
-            {gameState === "lose" ? (
-                <>
-                    <Image source={require("../assets/images/game-lose.png")} style={styles.full} />
+                {gameState === "lose" ? (
+                    <>
+                        <Image source={require("../assets/images/game-lose.png")} style={styles.full} />
+                        <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
+                            <Text style={styles.restartText}>Restart</Text>
+                        </TouchableOpacity>
+                    </>
+                ) : (
+                    <TouchableOpacity activeOpacity={1} onPress={handlePress}>
+                        {partsVisible ? (
+                            <View style={styles.partsContainer}>
+                                <Animated.Image source={require("../assets/images/left.png")} style={[styles.left, { transform: [{ translateX: leftAnim }] }]} />
+                                <Animated.Image source={require("../assets/images/right.png")} style={[styles.right, { transform: [{ translateX: rightAnim }] }]} />
+                                <Animated.Image source={require("../assets/images/top.png")} style={[styles.top, { transform: [{ translateY: topAnim }] }]} />
+                                <Image source={require("../assets/images/star.png")} style={styles.full} />
+                            </View>
+                        ) : (
+                            <Image source={require("../assets/images/game1.png")} style={styles.full} />
+                        )}
+                    </TouchableOpacity>
+                )}
+
+                {gameState === "win" && (
                     <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
                         <Text style={styles.restartText}>Restart</Text>
                     </TouchableOpacity>
-                </>
-            ) : (
-                <TouchableOpacity activeOpacity={1} onPress={handlePress}>
-                    {partsVisible ? (
-                        <View style={styles.partsContainer}>
-                            <Animated.Image source={require("../assets/images/left.png")} style={[styles.left, { transform: [{ translateX: leftAnim }] }]} />
-                            <Animated.Image source={require("../assets/images/right.png")} style={[styles.right, { transform: [{ translateX: rightAnim }] }]} />
-                            <Animated.Image source={require("../assets/images/top.png")} style={[styles.top, { transform: [{ translateY: topAnim }] }]} />
-                            <Image source={require("../assets/images/star.png")} style={styles.full} />
-                        </View>
-                    ) : (
-                        <Image source={require("../assets/images/game1.png")} style={styles.full} />
-                    )}
-                </TouchableOpacity>
-            )}
-
-            {gameState === "win" && (
-                <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
-                    <Text style={styles.restartText}>Restart</Text>
-                </TouchableOpacity>
-            )}
-        </View>
+                )}
+            </View>
+        </ImageBackground>
     );
 };
 
@@ -112,7 +114,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: "#0A2231",
         paddingHorizontal: 31,
     },
 

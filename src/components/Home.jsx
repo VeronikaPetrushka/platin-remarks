@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, ImageBackground } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -85,89 +85,91 @@ const Home = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
 
-            <View style={styles.upperContainer}>
-                <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                <Text style={styles.upperText}>PLATIN REMARKS</Text>
-            </View>
+                <View style={styles.upperContainer}>
+                    <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+                    <Text style={styles.upperText}>PLATIN REMARKS</Text>
+                </View>
 
-            <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
-                <TouchableOpacity style={[styles.settingsBtn, tags.length === 0 && {opacity: 0.5}]} onPress={handleShowTags} disabled={tags.length === 0}>
-                    <Icons type={'settings'} />
+                <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20}}>
+                    <TouchableOpacity style={[styles.settingsBtn, tags.length === 0 && {opacity: 0.5}]} onPress={handleShowTags} disabled={tags.length === 0}>
+                        <Icons type={'settings'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.dateBtn} onPress={showDatePicker}>
+                        <Text style={styles.dateBtnText}>{formattedDate}</Text>
+                    </TouchableOpacity>
+                    <View style={styles.starBtn}>
+                        <Icons type={'star'} />
+                    </View>
+                </View>
+
+                {showTags && (
+                    <View style={{width: '100%', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12}}>
+                        {tags.map((tag, index) => (
+                            <TouchableOpacity 
+                                key={index} 
+                                style={[styles.tagBtn, { backgroundColor: tag.color }, selectedTag.name === tag.name && {borderWidth: 3, borderColor: '#fdac03'}]} 
+                                onPress={() => setSelectedTag(tag)}
+                                >
+                                <Text style={styles.tagText}>{tag.name}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+
+                {showPicker && (
+                    <DateTimePicker 
+                        value={date} 
+                        mode="date" 
+                        display="spinner" 
+                        themeVariant="dark"
+                        onChange={onChange} 
+                    />
+                )}
+
+                <View style={styles.noteContainer}>
+                    <View style={styles.noteUpperContainer}>
+                        <Text style={styles.noteTitle}>Last note</Text>
+                    </View>
+                    {
+                        latestNote ? (
+                            <View style={{width: '80%', marginVertical: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
+                                <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                                    <Text style={[styles.noteTitle, {color: '#000'}]}>{latestNote.title}</Text>
+                                    <Text style={[styles.noteTitle, {color: '#000'}]}>{latestNote.tag?.name}</Text>
+                                </View>
+                                <View style={{width: '100%', padding: 10}}>
+                                    <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{latestNote.note}</Text>
+                                </View>
+                            </View>
+                        ) : (
+                            <View style={{width: '100%', padding: 30 }}>
+                                <View style={{width: 32, height: 32, marginBottom: 12, alignSelf: 'center'}}>
+                                    <Icons type={'plus'} />
+                                </View>
+                                <Text style={styles.noteText}>There is no notes yet, you can add a new one</Text>
+                            </View>
+                        )
+                    }
+                </View>
+
+                <TouchableOpacity 
+                    style={[styles.noteBtn, {backgroundColor: '#4b6392', marginBottom: 12}]}
+                    onPress={() => navigation.navigate('AddScreen', { type: 'Quick note' })}
+                    >
+                    <Text style={styles.noteBtnText}>Quick note</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.dateBtn} onPress={showDatePicker}>
-                    <Text style={styles.dateBtnText}>{formattedDate}</Text>
+                <TouchableOpacity 
+                    style={[styles.noteBtn, {backgroundColor: '#fdac03'}]}
+                    onPress={() => navigation.navigate('AddScreen', { type: 'Advanced note' })}
+                    >
+                    <Text style={styles.noteBtnText}>Advanced note</Text>
                 </TouchableOpacity>
-                <View style={styles.starBtn}>
-                    <Icons type={'star'} />
+
                 </View>
-            </View>
-
-            {showTags && (
-                <View style={{width: '100%', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12}}>
-                    {tags.map((tag, index) => (
-                        <TouchableOpacity 
-                            key={index} 
-                            style={[styles.tagBtn, { backgroundColor: tag.color }, selectedTag.name === tag.name && {borderWidth: 3, borderColor: '#fdac03'}]} 
-                            onPress={() => setSelectedTag(tag)}
-                            >
-                            <Text style={styles.tagText}>{tag.name}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            )}
-
-            {showPicker && (
-                <DateTimePicker 
-                    value={date} 
-                    mode="date" 
-                    display="spinner" 
-                    themeVariant="dark"
-                    onChange={onChange} 
-                />
-            )}
-
-            <View style={styles.noteContainer}>
-                <View style={styles.noteUpperContainer}>
-                    <Text style={styles.noteTitle}>Last note</Text>
-                </View>
-                {
-                    latestNote ? (
-                        <View style={{width: '80%', marginVertical: 20, alignSelf: 'center', overflow: 'hidden', borderRadius: 16, backgroundColor: '#fff' }}>
-                            <View style={[styles.noteUpperContainer, {backgroundColor: '#fdac03', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
-                                <Text style={[styles.noteTitle, {color: '#000'}]}>{latestNote.title}</Text>
-                                <Text style={[styles.noteTitle, {color: '#000'}]}>{latestNote.tag?.name}</Text>
-                            </View>
-                            <View style={{width: '100%', padding: 10}}>
-                                <Text style={[styles.noteText, {color: '#000', textAlign: 'left'}]}>{latestNote.note}</Text>
-                            </View>
-                        </View>
-                    ) : (
-                        <View style={{width: '100%', padding: 30 }}>
-                            <View style={{width: 32, height: 32, marginBottom: 12, alignSelf: 'center'}}>
-                                <Icons type={'plus'} />
-                            </View>
-                            <Text style={styles.noteText}>There is no notes yet, you can add a new one</Text>
-                        </View>
-                    )
-                }
-            </View>
-
-            <TouchableOpacity 
-                style={[styles.noteBtn, {backgroundColor: '#4b6392', marginBottom: 12}]}
-                onPress={() => navigation.navigate('AddScreen', { type: 'Quick note' })}
-                >
-                <Text style={styles.noteBtnText}>Quick note</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-                style={[styles.noteBtn, {backgroundColor: '#fdac03'}]}
-                onPress={() => navigation.navigate('AddScreen', { type: 'Advanced note' })}
-                >
-                <Text style={styles.noteBtnText}>Advanced note</Text>
-            </TouchableOpacity>
-
-        </View>
+        </ImageBackground>
     )
 };
 
@@ -175,7 +177,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#0A2231',
         paddingHorizontal: 31
     },
 

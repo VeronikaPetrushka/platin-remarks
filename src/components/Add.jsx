@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput, Alert, ScrollView } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput, Alert, ScrollView, ImageBackground } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -98,86 +98,87 @@ const Add = ({ type }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
 
-            <View style={styles.upperContainer}>
-                <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                <Text style={styles.upperText}>PLATIN REMARKS</Text>
-            </View>
-
-            <TouchableOpacity style={styles.titleContainer} onPress={showDatePicker}>
-                <Text style={styles.title}>{type}: {formattedDate}</Text>
-            </TouchableOpacity>
-
-            {showPicker && (
-                <DateTimePicker 
-                    value={date} 
-                    mode="date" 
-                    display="spinner" 
-                    themeVariant="dark"
-                    onChange={onChange} 
-                />
-            )}
-
-            <Text style={[styles.title, {marginBottom: 12}]}>Tags:</Text>
-
-            <ScrollView horizontal style={{ maxHeight: 60, marginBottom: 20 }}>
-                {tags.map((tag, index) => (
-                    <TouchableOpacity 
-                        key={index} 
-                        style={[styles.tagBtn, { backgroundColor: tag.color }, selectedTag === tag && {borderWidth: 3, borderColor: '#fdac03'}]} 
-                        onPress={() => setSelectedTag(tag)}
-                        >
-                        <Text style={styles.tagText}>{tag.name}</Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
-
-            <ScrollView style={{width: '100%'}}>
-                <View style={styles.noteContainer}>
-                    <View style={styles.noteUpperContainer}>
-                        <TextInput
-                            style={[styles.input, {fontWeight: '700'}]}
-                            value={title}
-                            onChangeText={setTitle}
-                            autoFocus
-                            placeholder="Title..."
-                            placeholderTextColor="#fff"
-                        />
-                    </View>
-                    <View style={{padding: 12}}>
-                        <TextInput
-                            style={styles.input}
-                            value={note}
-                            onChangeText={setNote}
-                            multiline
-                            placeholder="Enter note"
-                            placeholderTextColor="#fff"
-                        />
-                        {type === 'Advanced note' && (
-                            <TouchableOpacity style={[styles.attachBtn, !image && {backgroundColor: '#394f7a'}]} onPress={uploadImage}>
-                                <Icons type={'attach'} />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                <View style={styles.upperContainer}>
+                    <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+                    <Text style={styles.upperText}>PLATIN REMARKS</Text>
                 </View>
 
-                <TouchableOpacity 
-                    style={[styles.noteBtn, {backgroundColor: '#4b6392', marginBottom: 12}]}
-                    onPress={handleAddNote}
-                    >
-                    <Text style={styles.noteBtnText}>Save</Text>
+                <TouchableOpacity style={styles.titleContainer} onPress={showDatePicker}>
+                    <Text style={styles.title}>{type}: {formattedDate}</Text>
                 </TouchableOpacity>
-            </ScrollView>
 
-        </View>
+                {showPicker && (
+                    <DateTimePicker 
+                        value={date} 
+                        mode="date" 
+                        display="spinner" 
+                        themeVariant="dark"
+                        onChange={onChange} 
+                    />
+                )}
+
+                <Text style={[styles.title, {marginBottom: 12}]}>Tags:</Text>
+
+                <ScrollView horizontal style={{ maxHeight: 60, marginBottom: 20 }}>
+                    {tags.map((tag, index) => (
+                        <TouchableOpacity 
+                            key={index} 
+                            style={[styles.tagBtn, { backgroundColor: tag.color }, selectedTag === tag && {borderWidth: 3, borderColor: '#fdac03'}]} 
+                            onPress={() => setSelectedTag(tag)}
+                            >
+                            <Text style={styles.tagText}>{tag.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+
+                <ScrollView style={{width: '100%'}}>
+                    <View style={styles.noteContainer}>
+                        <View style={styles.noteUpperContainer}>
+                            <TextInput
+                                style={[styles.input, {fontWeight: '700'}]}
+                                value={title}
+                                onChangeText={setTitle}
+                                autoFocus
+                                placeholder="Title..."
+                                placeholderTextColor="#fff"
+                            />
+                        </View>
+                        <View style={{padding: 12}}>
+                            <TextInput
+                                style={styles.input}
+                                value={note}
+                                onChangeText={setNote}
+                                multiline
+                                placeholder="Enter note"
+                                placeholderTextColor="#fff"
+                            />
+                            {type === 'Advanced note' && (
+                                <TouchableOpacity style={[styles.attachBtn, !image && {backgroundColor: '#394f7a'}]} onPress={uploadImage}>
+                                    <Icons type={'attach'} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+
+                    <TouchableOpacity 
+                        style={[styles.noteBtn, {backgroundColor: '#4b6392', marginBottom: 12}]}
+                        onPress={handleAddNote}
+                        >
+                        <Text style={styles.noteBtnText}>Save</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+
+                </View>
+        </ImageBackground>
     )
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0A2231',
         paddingHorizontal: 31
     },
 
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '400',
         fontSize: 16,
-        lineHeight: 19.4
+        lineHeight: 19.4,
     },
 
     settingsBtn: {

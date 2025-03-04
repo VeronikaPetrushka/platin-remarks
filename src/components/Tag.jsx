@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput, ImageBackground } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icons from "./Icons";
 
@@ -74,61 +74,63 @@ const Tag = () => {
     };    
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
 
-            <View style={styles.upperContainer}>
-                <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                <Text style={styles.upperText}>PLATIN REMARKS</Text>
-            </View>
+                <View style={styles.upperContainer}>
+                    <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+                    <Text style={styles.upperText}>PLATIN REMARKS</Text>
+                </View>
 
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>Setup tags</Text>
-            </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>Setup tags</Text>
+                </View>
 
-            <View style={{width: '100%', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20}}>
-            
-                {tags.map((tag, index) => (
-                    <TouchableOpacity 
-                        key={index} 
-                        style={[styles.tagBtn, 
-                            { backgroundColor: tag.color },
-                            selectedDelete === tag && {borderWidth: 3, borderColor: '#fdac03'}, 
-                            ]}
-                        onPress={() => handleDeleteSelect(tag)}
-                        >
-                        <Text style={styles.tagText}>{tag.name}</Text>
-                    </TouchableOpacity>
-                ))}
+                <View style={{width: '100%', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20}}>
 
-                {inputVisible && (
-                    <>
-                        <TextInput
-                            style={styles.input}
-                            value={newTag}
-                            onChangeText={setNewTag}
-                            autoFocus
-                            placeholder="Enter tag"
-                            placeholderTextColor="#000"
-                        />
-                        <TouchableOpacity  
-                            style={[styles.saveBtn, !newTag && {opacity: 0.5}]}
-                            onPress={handleAddTag}
-                            disabled={!newTag}
-                        >
-                            <Icons type={'save'} />
+                    {tags.map((tag, index) => (
+                        <TouchableOpacity 
+                            key={index} 
+                            style={[styles.tagBtn, 
+                                { backgroundColor: tag.color },
+                                selectedDelete === tag && {borderWidth: 3, borderColor: '#fdac03'}, 
+                                ]}
+                            onPress={() => handleDeleteSelect(tag)}
+                            >
+                            <Text style={styles.tagText}>{tag.name}</Text>
                         </TouchableOpacity>
-                    </>
-                )}
+                    ))}
 
-                <TouchableOpacity 
-                    style={[styles.settingsBtn, selectedDelete && {backgroundColor: '#ff3b30'}]} 
-                    onPress={selectedDelete ? handleDeleteTag : () => setInputVisible(true)}
-                    >
-                    <Icons type={selectedDelete ? 'trash' : 'plus'} />
-                </TouchableOpacity>
-            </View>
+                    {inputVisible && (
+                        <>
+                            <TextInput
+                                style={styles.input}
+                                value={newTag}
+                                onChangeText={setNewTag}
+                                autoFocus
+                                placeholder="Enter tag"
+                                placeholderTextColor="#000"
+                            />
+                            <TouchableOpacity  
+                                style={[styles.saveBtn, !newTag && {opacity: 0.5}]}
+                                onPress={handleAddTag}
+                                disabled={!newTag}
+                            >
+                                <Icons type={'save'} />
+                            </TouchableOpacity>
+                        </>
+                    )}
 
-        </View>
+                    <TouchableOpacity 
+                        style={[styles.settingsBtn, selectedDelete && {backgroundColor: '#ff3b30'}]} 
+                        onPress={selectedDelete ? handleDeleteTag : () => setInputVisible(true)}
+                        >
+                        <Icons type={selectedDelete ? 'trash' : 'plus'} />
+                    </TouchableOpacity>
+                </View>
+
+                </View>
+        </ImageBackground>
     )
 };
 
@@ -136,7 +138,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#0A2231',
         paddingHorizontal: 31
     },
 

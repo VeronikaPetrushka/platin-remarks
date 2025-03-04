@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, ImageBackground } from "react-native"
 import { useNavigation } from "@react-navigation/native";
 
 const { height } = Dimensions.get('window');
@@ -18,47 +18,49 @@ const First = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require('../assets/back.png')} style={{flex: 1}}>
+            <View style={styles.container}>
 
-            {
-                index === 0 ?
-                (
-                    <Image source={require('../assets/images/logo.png')} style={[styles.image, {width: 222, height: height * 0.212, marginTop: height * 0.03}]} />
-                ) :
-                index === 1 ? (
-                    <Image source={require('../assets/images/buttons.png')} style={[styles.image, {width: 264, height: height * 0.11, marginTop: height * 0.12}]} />
-                ) : (
-                    <Image source={require('../assets/images/game.png')} style={[styles.image, {width: 268, height: height * 0.268, marginTop: height * 0.02}]} />
-                )
-            }
+                {
+                    index === 0 ?
+                    (
+                        <Image source={require('../assets/images/logo.png')} style={[styles.image, {width: 222, height: height * 0.212, marginTop: height * 0.03}]} />
+                    ) :
+                    index === 1 ? (
+                        <Image source={require('../assets/images/buttons.png')} style={[styles.image, {width: 264, height: height * 0.11, marginTop: height * 0.12}]} />
+                    ) : (
+                        <Image source={require('../assets/images/game.png')} style={[styles.image, {width: 268, height: height * 0.268, marginTop: height * 0.02}]} />
+                    )
+                }
 
-            <View style={styles.textContainer}>
-                
-                <Text style={styles.title}>
-                    {
-                        index === 0 ? 'Welcome to Platin Remarks!'
-                        : index === 1 ? 'Tagging Notes' 
-                        : 'Unlock Secret Prizes!'
-                    }
-                </Text>
+                <View style={styles.textContainer}>
+                    
+                    <Text style={styles.title}>
+                        {
+                            index === 0 ? 'Welcome to Platin Remarks!'
+                            : index === 1 ? 'Tagging Notes' 
+                            : 'Unlock Secret Prizes!'
+                        }
+                    </Text>
 
-                <Text style={styles.text}>
-                    {
-                        index === 0 ? 'Keep your thoughts, ideas, and tasks organized with ease. Create quick notes or add detailed ones with attachments. Let’s get started!'
-                        : index === 1 ? 'Organize your notes by adding tags like "Work," "Creative," or anything you prefer! You can also create your own custom tags to fit your needs.' 
-                        : 'Take a break and play a fun mini-game to earn secret useful prizes. Just separate a star from a circle without damaging it—easy and rewarding!'
-                    }
-                </Text>
+                    <Text style={styles.text}>
+                        {
+                            index === 0 ? 'Keep your thoughts, ideas, and tasks organized with ease. Create quick notes or add detailed ones with attachments. Let’s get started!'
+                            : index === 1 ? 'Organize your notes by adding tags like "Work," "Creative," or anything you prefer! You can also create your own custom tags to fit your needs.' 
+                            : 'Take a break and play a fun mini-game to earn secret useful prizes. Just separate a star from a circle without damaging it—easy and rewarding!'
+                        }
+                    </Text>
 
-                <TouchableOpacity style={styles.btn} onPress={handleButtonPress}>
-                    <Text style={styles.btnText}>{
-                        index === 2 ? 'Start' : 'Next'
-                    }</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.btn} onPress={handleButtonPress}>
+                        <Text style={styles.btnText}>{
+                            index === 2 ? 'Start' : 'Next'
+                        }</Text>
+                    </TouchableOpacity>
 
-            </View>
+                </View>
 
-        </View>
+                </View>
+        </ImageBackground>
     )
 };
 
@@ -68,7 +70,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingTop: height * 0.07,
-        backgroundColor: '#0A2231'
     },
 
     image: {
